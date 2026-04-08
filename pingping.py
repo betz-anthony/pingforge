@@ -136,7 +136,7 @@ class PingApp(App):
         self.ping_tree.root.expand()
         self.build_ui_tree(self.ping_tree.root, self.tree_data)
         self.set_interval(1.0, self.refresh_pings)
-def build_ui_tree(self, parent, node):
+    def build_ui_tree(self, parent, node):
         for host in node.get("hosts", []):
             n = parent.add_leaf(host)
             self.host_nodes[host] = n
