@@ -2,6 +2,8 @@
 
 A simple and fast real-time multi-host ping monitor with a clean terminal user interface (TUI).
 
+<img width="1067" height="736" alt="image" src="https://github.com/user-attachments/assets/3052a8ce-deb0-4812-a97c-6a8fc7bd5add" />
+
 Built with [Textual](https://github.com/Textualize/textual).
 
 ## Features
@@ -11,7 +13,7 @@ Built with [Textual](https://github.com/Textualize/textual).
 - Color-coded latency (green = fast, red = slow)
 - Visual heat bars for quick status overview
 - Details panel for selected hosts
-- Lightweight and cross-platform
+- Lightweight and cross-platform (Linux, MacOS)
 
 ## Quick Start
 
@@ -19,18 +21,18 @@ Built with [Textual](https://github.com/Textualize/textual).
 
 ```bash
 git clone https://github.com/betz-anthony/pingping.git
-cd multi-ping-tui
+cd pingping
 
 pip install textual
 ```
 ### 2. Run the app
 ```bash
-python3 multi-ping.py
+python3 pingping.py
 ```
 or
 ```bash
-chmod +x multi-ping.py
-./multi-ping.py
+chmod +x pingping.py
+./pingping.py
 ```
 ### 3. Configuration
 Create a file named pingping.conf in the same folder to organize your hosts:
@@ -52,16 +54,29 @@ hosts = 192.168.1.1
 hosts = 10.0.0.10
         10.0.0.20
 ```
+
 Use dotted notation for deeper nesting (e.g. Company.Site1.Servers)
-If no config file exists, it defaults to pinging Google and Cloudflare DNS
+If no config file exists, it defaults to pinging Google and Cloudflare DNS.  Alternate config files can be used. 
+```bash
+./pingping.py -c alt_config.conf
+```
+OR
+```bash
+./pingping.py --config alt_config.conf
+```
 
 Keyboard Controls
 
 * Arrow keys — Navigate tree
 * Enter — Expand/collapse folders
 * q — Quit
+* r — force refresh
+* ctrl + p — palette
 
 ### 4. Requirements
 
 Python 3.8 or higher
 textual library
+
+## License
+MIT license
