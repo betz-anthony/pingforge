@@ -79,4 +79,4 @@ Python 3.8 or higher
 textual library
 
 ## License
-MIT license
+GPLv3 license
