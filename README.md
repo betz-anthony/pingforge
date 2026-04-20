@@ -1,4 +1,4 @@
-# pingping TUI
+# pingforge TUI
 
 A simple and fast real-time multi-host ping monitor with a clean terminal user interface (TUI).
 
@@ -20,22 +20,22 @@ Built with [Textual](https://github.com/Textualize/textual).
 ### 1. Installation
 
 ```bash
-git clone https://github.com/betz-anthony/pingping.git
-cd pingping
+git clone https://github.com/betz-anthony/pingforge.git
+cd pingforge
 
 pip install textual
 ```
 ### 2. Run the app
 ```bash
-python3 pingping.py
+python3 pingforge.py
 ```
 or
 ```bash
-chmod +x pingping.py
-./pingping.py
+chmod +x pingforge.py
+./pingforge.py
 ```
 ### 3. Configuration
-Create a file named pingping.conf in the same folder to organize your hosts:
+Create a file named pingforge.conf in the same folder to organize your hosts:
 
 ```ini:
 [Google]
@@ -58,11 +58,11 @@ hosts = 10.0.0.10
 Use dotted notation for deeper nesting (e.g. Company.Site1.Servers)
 If no config file exists, it defaults to pinging Google and Cloudflare DNS.  Alternate config files can be used. 
 ```bash
-./pingping.py -c alt_config.conf
+./pingforge.py -c alt_config.conf
 ```
 OR
 ```bash
-./pingping.py --config alt_config.conf
+./pingforge.py --config alt_config.conf
 ```
 
 Keyboard Controls
