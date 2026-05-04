@@ -79,8 +79,9 @@ def heat_bar(rtt):
     return "█" * blocks + "░" * (10 - blocks)
 
 def colorize(host: str, rtt, status: str):
+    bar = heat_bar(rtt)
     if status != "OK":
-        return f"[bold red]{host} {status}[/]"
+        return f"[bold red]{host} {status} {bar}[/]"
     if rtt < 50:
         color = "green"
     elif rtt < 100:
@@ -91,7 +92,7 @@ def colorize(host: str, rtt, status: str):
         color = "magenta"
     else:
         color = "red"
-    return f"[{color}]{host} {rtt:.1f} ms[/]"
+    return f"[{color}]{host} {rtt:.1f} ms {bar}[/]"
 
 # =========================
 # APP
@@ -144,30 +145,6 @@ class PingForge(App):
         self.ping_tree.root.expand()
         self.build_ui_tree(self.ping_tree.root, self.tree_data)
         self.set_interval(1.0, self.refresh_pings)
-    def build_ui_tree(self, parent, node):
-        for host in node.get("hosts", []):
-            n = parent.add_leaf(host)
-            self.host_nodes[host] = n
-
-        for name, child in node.get("children", {}).items():
-            branch = parent.add(name)
-            self.build_ui_tree(branch, child)
-
-    async def refresh_pings(self):
-        tasks = []
-        for host in list(self.host_nodes.keys()):
-            tasks.append(self._ping_one(host))
-
-        if tasks:
-            await asyncio.gather(*tasks)
-
-    async def _ping_one(self, host: str):
-        rtt, status = await asyncio.to_thread(ping, host)
-        self.results[host] = (rtt, status)
-
-        if host in self.host_nodes:
-            label = f"{colorize(host, rtt, status)} {heat_bar(rtt)}"
-            self.host_nodes[host].set_label(label)
 
     def build_ui_tree(self, parent, node):
         for host in node.get("hosts", []):
@@ -200,8 +177,7 @@ class PingForge(App):
         self.results[host] = (rtt, status)
 
         if host in self.host_nodes:
-            label = f"{colorize(host, rtt, status)} {heat_bar(rtt)}"
-            self.host_nodes[host].set_label(label)
+            self.host_nodes[host].set_label(colorize(host, rtt, status))
 
     def on_tree_node_highlighted(self, event):
         node = event.node
