@@ -126,7 +126,7 @@ class PingForge(App):
     def __init__(self, tree_data):
         super().__init__()
         self.tree_data = tree_data
-        self.host_nodes = {}      # host -> TreeNode
+        self.host_nodes = {}      # host -> list[TreeNode]
         self.results = {}         # host -> (rtt, status)
 
     def compose(self) -> ComposeResult:
@@ -149,7 +149,7 @@ class PingForge(App):
     def build_ui_tree(self, parent, node):
         for host in node.get("hosts", []):
             n = parent.add_leaf(host)
-            self.host_nodes[host] = n
+            self.host_nodes.setdefault(host, []).append(n)
 
         for name, child in node.get("children", {}).items():
             branch = parent.add(name)
@@ -176,8 +176,8 @@ class PingForge(App):
         rtt, status = await asyncio.to_thread(ping, host)
         self.results[host] = (rtt, status)
 
-        if host in self.host_nodes:
-            self.host_nodes[host].set_label(colorize(host, rtt, status))
+        for node in self.host_nodes.get(host, []):
+            node.set_label(colorize(host, rtt, status))
 
     def on_tree_node_highlighted(self, event):
         node = event.node
@@ -186,10 +186,20 @@ class PingForge(App):
 
         if label_plain in self.results:
             rtt, status = self.results[label_plain]
+            bar = heat_bar(rtt)
+            if status != "OK":
+                colored_bar = f"[bold red]{bar}[/]"
+            else:
+                if rtt < 50: bar_color = "green"
+                elif rtt < 100: bar_color = "cyan"
+                elif rtt < 150: bar_color = "yellow"
+                elif rtt < 250: bar_color = "magenta"
+                else: bar_color = "red"
+                colored_bar = f"[{bar_color}]{bar}[/]"
             text = f"""[bold]Host:[/] {label_plain}
 [bold]Status:[/] {status}
 [bold]RTT:[/] {rtt if rtt is not None else 'N/A'} ms
-[bold]Bar:[/] {heat_bar(rtt)}
+[bold]Bar:[/] {colored_bar}
 """
             self.details_panel.update(text)
         else:
